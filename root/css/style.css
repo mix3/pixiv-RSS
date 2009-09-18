@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+body{
+   text-align: center;
+}
+
+div#container{
+   text-align: left;
+   margin: 0 auto;
+   width: 700px;
+   backgroud: #DBFF4A;
+}
+
+div#header{
+   width: 100%;
+}
+
+div#header img#logo{
+   float: left;
+}
+
+div#login {
+   float: right;
+   font-size: 9pt;
+   vertical-align: top;
+}
+
+div#login input {
+   font-size: 9pt;
+}
+
+div #main{
+   width: 100%;
+   margin: 2px 0;
+}
+
+div#footer{
+   text-align: right;
+   border-top: 1px solid #999;
+   font-style: italic;
+   font-weight: bold;
+   width: 100%;
+}

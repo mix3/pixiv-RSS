@@ -1,0 +1,6 @@
+root/img/*
+lib/Scrape.pm.*
+lib/NewPixivRSS.pm
+tmp/*
+script/scrape.pl
+db/pixivrss.db

@@ -1,0 +1,21 @@
+package NewPixivRSS;
+use Ark;
+
+our $VERSION = '0.01';
+
+__PACKAGE__->config(
+   passphrase  => 'passphrase',
+   path_img    => '/project/path/NewPixivRSS/root/img'
+);
+
+use_plugins qw{
+   Session
+   Session::State::Cookie
+   Session::Store::Model
+
+   Authentication
+   Authentication::Credential::Pixiv
+   Authentication::Store::Null
+};
+
+1;

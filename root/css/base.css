@@ -1,0 +1,41 @@
+@charset "UTF-8";
+
+body {
+   font-family: verdana,Arial,sans-serif;
+}
+
+img {
+   border-style:none;
+}
+
+a img {
+   border-style:none;
+}
+
+a:link {
+   color: #3AC5BE;
+   text-decoration: underline;
+}
+
+a:visited {
+   color: #666666;
+}
+
+a:hover, a:active {
+   color: #FF3399;
+   text-decoration: none;
+}
+
+form#register {
+   text-align: center;
+   border-style: solid;
+   border-width: 1px;
+   border-color: #CCC;
+}
+
+h3 {
+   padding: 3px 10px;
+   border-bottom: 1px solid #CCC;
+   border-left: 9px solid #CCC;
+   background-color: #F3F3F3;
+}
