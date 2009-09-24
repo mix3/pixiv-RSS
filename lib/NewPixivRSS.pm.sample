@@ -4,8 +4,7 @@ use Ark;
 our $VERSION = '0.01';
 
 __PACKAGE__->config(
-   passphrase  => 'passphrase',
-   path_img    => '/project/path/NewPixivRSS/root/img'
+   passphrase     => 'passphrase',
 );
 
 use_plugins qw{
@@ -18,4 +17,8 @@ use_plugins qw{
    Authentication::Store::Null
 };
 
+conf 'Plugin::Session::Store::Model' => {
+    model => 'Session',
+};
+    
 1;
