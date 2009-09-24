@@ -44,12 +44,10 @@ sub index :Path :Args(0) {
       }
    }
    
-   #warn NewPixivRSS->path_to('tmp/erferer');
-   open OUT, '>>  '.NewPixivRSS->path_to('tmp/erferer');
-   if(defined $c->req->referer){
-      print OUT $c->req->referer, "\n";
-   }
-   close OUT;
+   #warn $c->req->header('referer'), "\n";
+   
+   #$c->model('Pixiv')->add_referer($c->req->address, $c->req->referer);
+   #$c->model('Pixiv')->add_referer($c->req->header('address'), $c->req->header('referer'));
 }
 
 sub register :Private {
@@ -85,13 +83,16 @@ sub rss :Chained('kind') :PathPart('') :Args(1) {
    my $scrape;
    eval {
       $scrape = Scrape->new({
-         user  => $c->stash->{user}->user,
-         pass  => $c->stash->{user}->pass,
-         model => $c->model('Pixiv'),
+         user           => $c->stash->{user}->user,
+         pass           => $c->stash->{user}->pass,
+         model          => $c->model('Pixiv'),
+         img_url        => $c->uri_for('img')->as_string,
+         save_img_path  => $c->app->path_to('root/img')->stringify,
       });
    };
    
    if($@){
+      warn $@, "\n";
       $c->detach('meinte');
    }
    
@@ -114,7 +115,6 @@ sub kind :Chained('rdf') :PathPart('') :CaptureArgs(1) {
    }
    
    $c->stash->{kind} = $kind;
-   
 }
 
 sub meinte :Private {
@@ -169,4 +169,4 @@ sub rdf :Chained('/') :PathPart('') :CaptureArgs(1) {
 }
 
 1;
-k
+

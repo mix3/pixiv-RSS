@@ -5,29 +5,36 @@ use Any::Moose;
 has 'user' => (
    is       => 'rw',
    isa      => 'Str',
-   required  => 1,
+   required => 1,
 );
 
 has 'pass' => (
    is       => 'rw',
    isa      => 'Str',
-   required  => 1,
+   required => 1,
 );
 
 has 'model' => (
    is       => 'rw',
    isa      => 'NewPixivRSS::Service::Pixiv',
-   required  => 1,
+   required => 1,
 );
 
-has 'mech' => (
+has 'img_url' => (
    is       => 'rw',
-   isa      => 'WWW::Mechanize',
+   isa      => 'Str',
+   required => 1,
 );
 
-has 'list' => (
+has 'save_img_path' => (
+   is       => 'rw',
+   isa      => 'Str',
+   required => 1,
+);
+
+has 'mech'  => (
    is    => 'rw',
-   isa   => 'ArrayRef',
+   isa   => 'WWW::Mechanize',
 );
 
 sub BUILD {
@@ -64,6 +71,17 @@ sub check_login {
    my $self = shift;
    return 1 if($self->mech->uri() eq 'http://www.pixiv.net/mypage.php');
    return;
+}
+
+sub round_image {
+   my $self = shift;
+   
+   $self->mech->get('http://www.pixiv.net/bookmark_new_illust.php');
+   _get_image($self, _scraper('illust_c5'));
+   $self->mech->get('http://www.pixiv.net/mypixiv_new_illust.php');
+   _get_image($self, _scraper('illust_c5'));
+   $self->mech->get('http://www.pixiv.net/member_illust.php');
+   _get_image($self, _scraper('illust_c4'));
 }
 
 sub create_rss {
@@ -118,7 +136,9 @@ sub _get_image {
    
    my $result = $scraper->scrape($self->mech->content);
    
-   warn Dump $result;
+   #warn Dump $result;
+   return () unless ($#{$result->{list}});
+   
    my @list = ();
    foreach my $img (@{$result->{list}}){
       my $name = _get_filename($img->{img_url});
@@ -128,15 +148,21 @@ sub _get_image {
       my $image = $self->model->get_image($name);
       if(! defined $image){
          warn " $name... downloading!\n";
-         warn $self->model->path_img.'/'.$name."\n";
-         $self->mech->get($img->{img_url}, ':content_file' => $self->model->path_img.'/'.$name);
+         warn $self->save_img_path.'/'.$name."\n";
+         eval {
+            $self->mech->get($img->{img_url}, ':content_file' => $self->save_img_path.'/'.$name);
+         };
+         if($@){
+            warn 'download error...', "\n";
+            next;
+         }
          my $info = _get_info($self, $img->{post_url});
          $self->model->add_image($name, $info->{title}, $info->{comment}, $img->{post_url});
          $image = $self->model->get_image($name);
       }else{
          warn " $name... exist!\n";
       }
-      push(@list, {title => $image->title, comment => $image->comment, url=>$image->perma, img_url => '/img/'.$name});
+      push(@list, {title => $image->title, comment => $image->comment, url=>$image->perma, img_url => $self->img_url.'/'.$name});
    }
    return @list;
 }
