@@ -36,6 +36,7 @@ sub del :Path('del') :Args(0) {
    my ($self, $c) = @_;
    
    $c->detach('/default') unless ($c->req->address =~ /^(127.0(.*)|192.168(.*))$/);
+   $c->model('Pixiv')->del_image($c->app->path_to('root/img')->stringify);
    $c->res->body('ok');
 }
  

@@ -10,3 +10,9 @@ CREATE TABLE Image (
    comment  TEXT,
    perma    TEXT
 );
+
+CREATE TABLE UserToImage (
+   user_id     TEXT NOT NULL,
+   image_name  TEXT NOT NULL,
+   PRIMARY KEY (user_id, image_name)
+);

@@ -76,12 +76,20 @@ sub check_login {
 sub round_image {
    my $self = shift;
    
+   my @list;
    $self->mech->get('http://www.pixiv.net/bookmark_new_illust.php');
-   _get_image($self, _scraper('illust_c5'));
+   push @list, _get_image($self, _scraper('illust_c5'));
    $self->mech->get('http://www.pixiv.net/mypixiv_new_illust.php');
-   _get_image($self, _scraper('illust_c5'));
+   push @list, _get_image($self, _scraper('illust_c5'));
    $self->mech->get('http://www.pixiv.net/member_illust.php');
-   _get_image($self, _scraper('illust_c4'));
+   push @list, _get_image($self, _scraper('illust_c4'));
+   
+   my @result;
+   foreach my $item (@list){
+      push @result, _get_filename($item->{img_url});
+   }
+   print warn @result;
+   $self->model->del_image_info($self->user, @result);
 }
 
 sub create_rss {
@@ -145,6 +153,7 @@ sub _get_image {
       my @del = split('_', $name);
       next if($#del > 1);
       
+      $self->model->add_user_to_image($self->user, $name);
       my $image = $self->model->get_image($name);
       if(! defined $image){
          warn " $name... downloading!\n";
@@ -208,7 +217,6 @@ sub _create_rss{
    return $rss->as_string;
    #return $rss;
 }
-
 
 sub _get_info{
    my ($self, $url) = @_;

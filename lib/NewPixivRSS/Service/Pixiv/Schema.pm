@@ -6,7 +6,7 @@ use warnings;
 use base 'DBIx::Class::Schema::Loader';
  
 __PACKAGE__->loader_options(
-	debug => 0,
+	debug => 1,
 	components => [qw(
 		UTF8Columns
 	)],

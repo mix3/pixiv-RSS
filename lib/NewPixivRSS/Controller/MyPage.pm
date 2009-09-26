@@ -45,4 +45,24 @@ sub del :Private {
    $c->redirect($c->uri_for('/logout'));
 }
 
+=comment
+sub twitter_regist :Local :Args(0) {
+   my ($self, $c) = @_;
+   $c->redirect_and_detach( $c->uri_for('/require_auth') )
+      unless $access_token_secret && $access_token_secret;
+}
+
+sub twitter_authorize :Local :Args(0) {
+    my ($self, $c) = @_;
+}
+
+sub twitter_auth_callback :Local :Args(0) {
+    my ($self, $c) = @_;
+}
+
+sub twitter_auth_complete :Local :Args(0) {
+    my ($self, $c) = @_;
+}
+=cut
+
 1;

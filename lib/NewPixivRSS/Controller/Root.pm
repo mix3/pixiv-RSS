@@ -43,11 +43,6 @@ sub index :Path :Args(0) {
          $c->forward('login');
       }
    }
-   
-   #warn $c->req->header('referer'), "\n";
-   
-   #$c->model('Pixiv')->add_referer($c->req->address, $c->req->referer);
-   #$c->model('Pixiv')->add_referer($c->req->header('address'), $c->req->header('referer'));
 }
 
 sub register :Private {
@@ -77,6 +72,11 @@ sub rss :Chained('kind') :PathPart('') :Args(1) {
    my ($self, $c, $rss) = @_;
    
    if($rss !~ /^(rss|rss2)$/){
+      $c->detach('default');
+   }
+   
+   if($c->req->param('tag')){
+      warn $c->req->param('tag'), "\n";
       $c->detach('default');
    }
    
